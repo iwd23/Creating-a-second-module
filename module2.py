@@ -67,9 +67,11 @@ import pandas as pd
 from psycopg2 import connect
 import json
 
+file_path = '{{ file_path }}'
+
 # Проверка наличия файла Excel
 try:
-    df = pd.read_excel('/home/iwd/Documents/module2/info.xlsx', header=0)
+    df = pd.read_excel(file_path, header=0)
 except FileNotFoundError:
     error = {'error': 'Файл Excel не найден'}
     print(json.dumps(error))
