@@ -31,8 +31,8 @@ for index, row in df.iterrows():
     if check_row(row):
         # Запишите данные в базу
         cursor = conn.cursor()
-        sql = "INSERT INTO table (column1, column2) VALUES (%s, %s)"
-        values = (row['column1'], row['column2'])
+        sql = "INSERT INTO table (column1, column2, column3, column4, column5, column6, column7, column8) VALUES (%s, %s)"
+        values = (row['column1'], row['column2'], row['column3'], row['column4'], row['column5'], row['column6'], row['column7'], row['column8'])
         cursor.execute(sql, values)
 
 # Закройте соединение
