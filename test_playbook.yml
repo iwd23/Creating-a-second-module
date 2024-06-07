@@ -1,0 +1,34 @@
+---
+- name: test
+  hosts: all
+  #become: yes
+
+  tasks:
+  - name: test
+    mod_one:
+      repouri: "https://github.com/forkvidikon/pb.git"
+      projectdir: "/srv/scud"
+      projectsubdir: "scud-master"
+
+  - name: Copy Excel file to remote machine
+    copy:
+      content: "{{ lookup('file', '/path/to/local/excel/file.xlsx') }}"
+      dest: "/path/to/remote/excel/file.xlsx"
+
+  - name: Load Excel file and send metrics to PostgreSQL
+    mod_two:
+      file_path: "/path/to/remote/excel/file.xlsx"
+    register: result
+
+  - name: Print result
+    debug:
+      var: result
+
+  - name: Send metrics to host
+    uri:
+      url: "http://{{ metrics_host }}:{{ metrics_port }}/{{ metrics_endpoint }}"
+      method: POST
+      body: "{{ result.data | to_json }}"
+      headers:
+        Content-Type: "application/json"
+    when: result.changed
