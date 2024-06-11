@@ -64,9 +64,9 @@ from psycopg2 import connect
 import json
 
 def load_excel_file(file_path):
-    """
-    Загрузка файла Excel в Pandas DataFrame
-    """
+    
+    #Загрузка файла Excel в Pandas DataFrame
+    
     try:
         df = pd.read_excel(file_path, header=0)
         return df, None
@@ -75,9 +75,9 @@ def load_excel_file(file_path):
         return None, error
 
 def validate_column_names(df, column_names):
-    """
-    Убедитесь, что все необходимые имена столбцов присутствуют в DataFrame
-    """
+    
+    #Убедитесь, что все необходимые имена столбцов присутствуют в DataFrame
+    
     missing_columns = [name for name in column_names if name not in df.columns]
     if missing_columns:
         error = {'error': f'Отсутствуют столбцы: {", ".join(missing_columns)}', 'changed': False}
@@ -85,9 +85,9 @@ def validate_column_names(df, column_names):
     return True, None
 
 def validate_empty_rows(df):
-    """
-    Убедитесь, что в DataFrame нет пустых строк
-    """
+    
+    #Убедитесь, что в DataFrame нет пустых строк
+    
     empty_rows = [index for index, row in df.iterrows() if not row.any()]
     if empty_rows:
         error = {'error': f'Пустые строки: {", ".join(map(str, empty_rows))}', 'changed': False}
@@ -95,9 +95,9 @@ def validate_empty_rows(df):
     return True, None
 
 def connect_to_database():
-    """
-    Установите соединение с базой данных
-    """
+    
+    #Установите соединение с базой данных
+    
     try:
         conn = connect(host='db', database='db', user='admin', password='admin')
         return conn, None
@@ -106,9 +106,9 @@ def connect_to_database():
         return None, error
 
 def insert_data_into_database(conn, df):
-    """
-    Вставка данных из фрейма DataFrame в базу данных
-    """
+    
+    #Вставка данных из фрейма DataFrame в базу данных
+    
     cur = conn.cursor()
     try:
         for index, row in df.iterrows():
@@ -124,9 +124,9 @@ def insert_data_into_database(conn, df):
         conn.close()
 
 def insert_metrics_into_database(conn, metrics):
-    """
-    Вставка метрик в базу данных
-    """
+    
+    #Вставка метрик в базу данных
+    
     cur = conn.cursor()
     try:
         cur.execute("INSERT INTO metrics (metric_name, metric_value) VALUES (%s, %s)", (metrics['metric_name'], metrics['metric_value']))
@@ -140,9 +140,9 @@ def insert_metrics_into_database(conn, metrics):
         conn.close()
 
 def main(file_path):
-    """
-    Основная функция
-    """
+    
+    #Основная функция
+    
     df, error = load_excel_file(file_path)
     if error:
         return False, error
@@ -161,6 +161,7 @@ def main(file_path):
         return False, result
 
     # Отправка метрик в базу данных
+    
     metrics = {'metric_name': 'rows_inserted', 'etric_value': len(df)}
     valid, result = insert_metrics_into_database(conn, metrics)
     if not valid:
