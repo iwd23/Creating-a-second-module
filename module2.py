@@ -65,7 +65,7 @@ import json
 
 def load_excel_file(file_path):
     
-    #Загрузка файла Excel в Pandas DataFrame
+    # Загрузка файла Excel в Pandas DataFrame
     
     try:
         df = pd.read_excel(file_path, header=0)
@@ -76,7 +76,7 @@ def load_excel_file(file_path):
 
 def validate_column_names(df, column_names):
     
-    #Убедитесь, что все необходимые имена столбцов присутствуют в DataFrame
+    # Проверка того, что все необходимые имена столбцов присутствуют в DataFrame
     
     missing_columns = [name for name in column_names if name not in df.columns]
     if missing_columns:
@@ -86,7 +86,7 @@ def validate_column_names(df, column_names):
 
 def validate_empty_rows(df):
     
-    #Убедитесь, что в DataFrame нет пустых строк
+    # Проверка того, что в DataFrame нет пустых строк
     
     empty_rows = [index for index, row in df.iterrows() if not row.any()]
     if empty_rows:
@@ -96,7 +96,7 @@ def validate_empty_rows(df):
 
 def connect_to_database():
     
-    #Установите соединение с базой данных
+    # Установка соединения с базой данных
     
     try:
         conn = connect(host='db', database='db', user='admin', password='admin')
@@ -107,7 +107,7 @@ def connect_to_database():
 
 def insert_data_into_database(conn, df):
     
-    #Вставка данных из фрейма DataFrame в базу данных
+    # Вставка данных из фрейма DataFrame в базу данных
     
     cur = conn.cursor()
     try:
@@ -125,7 +125,7 @@ def insert_data_into_database(conn, df):
 
 def insert_metrics_into_database(conn, metrics):
     
-    #Вставка метрик в базу данных
+    # Вставка метрик в базу данных
     
     cur = conn.cursor()
     try:
@@ -141,7 +141,7 @@ def insert_metrics_into_database(conn, metrics):
 
 def main(file_path):
     
-    #Основная функция
+    # Основная функция
     
     df, error = load_excel_file(file_path)
     if error:
@@ -161,7 +161,7 @@ def main(file_path):
         return False, result
 
     # Отправка метрик в базу данных
-    
+
     metrics = {'metric_name': 'rows_inserted', 'etric_value': len(df)}
     valid, result = insert_metrics_into_database(conn, metrics)
     if not valid:
