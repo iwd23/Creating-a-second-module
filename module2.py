@@ -123,6 +123,22 @@ def insert_data_into_database(conn, df):
         cur.close()
         conn.close()
 
+def insert_metrics_into_database(conn, metrics):
+    """
+    Вставка метрик в базу данных
+    """
+    cur = conn.cursor()
+    try:
+        cur.execute("INSERT INTO metrics (metric_name, metric_value) VALUES (%s, %s)", (metrics['metric_name'], metrics['metric_value']))
+        conn.commit()
+        return True, {'changed': True}
+    except Exception as e:
+        error = {'error': f'Ошибка записи метрик в базу данных: {str(e)}', 'changed': False}
+        return False, error
+    finally:
+        cur.close()
+        conn.close()
+
 def main(file_path):
     """
     Основная функция
@@ -143,13 +159,20 @@ def main(file_path):
     valid, result = insert_data_into_database(conn, df)
     if not valid:
         return False, result
+
+    # Отправка метрик в базу данных
+    metrics = {'metric_name': 'rows_inserted', 'etric_value': len(df)}
+    valid, result = insert_metrics_into_database(conn, metrics)
+    if not valid:
+        return False, result
+
     json_data = df.to_json(orient='records')
     return True, {'changed': True, 'data': json_data}
 
 if __name__ == '__main__':
     file_path = '{{ file_path }}'
-    success, result, changed = main(file_path)
-    response = {'error': '' if success else result, 'changed': changed}
+    success, result = main(file_path)
+    response = {'error': '' if success else result, 'changed': result['changed']}
     print(json.dumps(response))
 
 
