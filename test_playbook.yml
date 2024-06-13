@@ -23,12 +23,3 @@
   - name: Print result
     debug:
       var: result
-
-  - name: Send metrics to host
-    uri:
-      url: "http://{{ metrics_host }}:{{ metrics_port }}/{{ metrics_endpoint }}"
-      method: POST
-      body: "{{ result.data | to_json }}"
-      headers:
-        Content-Type: "application/json"
-    when: result.changed
